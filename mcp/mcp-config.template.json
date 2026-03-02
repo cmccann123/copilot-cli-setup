@@ -1,0 +1,31 @@
+{
+  "_comment": "Copy this file to ~/.copilot/mcp-config.json and replace all ${PLACEHOLDER} values. Run setup.ps1 to do this automatically with Azure Key Vault.",
+  "mcpServers": {
+    "playwright": {
+      "_comment": "Browser automation — useful for UI testing and scraping demos. Run: npm install -g @playwright/mcp",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {},
+      "tools": ["*"]
+    },
+    "azure-mcp": {
+      "_comment": "Azure resource management tools. Run: npm install -g @azure/mcp",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@azure/mcp@latest"],
+      "env": {
+        "AZURE_TENANT_ID": "${AZURE_TENANT_ID}",
+        "AZURE_CLIENT_ID": "${AZURE_CLIENT_ID}",
+        "AZURE_CLIENT_SECRET": "${AZURE_CLIENT_SECRET}"
+      },
+      "tools": ["*"]
+    },
+    "context7": {
+      "_comment": "Up-to-date library documentation lookup. No API key needed for basic use.",
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": ["*"]
+    }
+  }
+}
