@@ -10,6 +10,21 @@ Use when the user asks:
 - "walk me through this project"
 - "I just cloned this, where do I start"
 - "summarise the architecture"
+- "explain this codebase https://github.com/owner/repo" (GitHub URL provided)
+
+## Source Detection
+
+**If a GitHub URL is provided** (e.g. `https://github.com/owner/repo`):
+- Extract `owner` and `repo` from the URL
+- Use the GitHub MCP server to fetch the repo contents:
+  1. `get_file_contents` on `/` to list root files and directories
+  2. `get_file_contents` on `README.md`
+  3. `get_file_contents` on key entry point files (`agent/`, `src/`, `app/`, `main.py`, etc.)
+  4. `get_file_contents` on `package.json` or `pyproject.toml` for dependencies
+- Proceed to the structured summary below
+
+**If no URL is provided** (local repo):
+- Use `glob`/`view`/`grep` tools on the current working directory
 
 ## Process
 
