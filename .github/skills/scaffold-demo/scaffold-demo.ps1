@@ -33,23 +33,25 @@ Write-Host "`n[3/5] Creating folder structure..." -ForegroundColor Yellow
 
 New-Item -ItemType Directory -Force -Path "infra/modules" | Out-Null
 New-Item -ItemType File -Force -Path "infra/modules/.gitkeep" | Out-Null
-New-Item -ItemType Directory -Force -Path ".github/agents" | Out-Null
 
-# Copy agents and instructions from copilot-cli-setup
-$AgentsSource = Join-Path $RepoRoot ".github\agents"
-$InstructionsSource = Join-Path $RepoRoot ".github\copilot-instructions.md"
-if (Test-Path $AgentsSource) {
-    Copy-Item $AgentsSource -Destination ".github\" -Recurse -Force
-    Write-Host "  ✓ Agents copied" -ForegroundColor Green
-}
-if (Test-Path $InstructionsSource) {
-    Copy-Item $InstructionsSource -Destination ".github\" -Force
-    Write-Host "  ✓ Copilot instructions copied" -ForegroundColor Green
+# Copy entire .github config from copilot-cli-setup (agents, skills, instructions)
+Write-Host "  Copying Copilot config from copilot-cli-setup..." -ForegroundColor Gray
+$GithubSource = Join-Path $RepoRoot ".github"
+$itemsToCopy = @("agents", "skills", "instructions", "copilot-instructions.md")
+foreach ($item in $itemsToCopy) {
+    $src = Join-Path $GithubSource $item
+    if (Test-Path $src) {
+        Copy-Item $src -Destination ".github\" -Recurse -Force
+        Write-Host "  ✓ .github\$item copied" -ForegroundColor Green
+    }
 }
 
 # 4. Generate backend
 if ($Backend -eq "fastapi") {
     Write-Host "`n[4/5] Scaffolding FastAPI backend..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Force -Path "backend/routers" | Out-Null
+    New-Item -ItemType Directory -Force -Path "backend/models" | Out-Null
+    New-Item -ItemType Directory -Force -Path "backend/services" | Out-Null
     "fastapi`nhttpx`npydantic-settings`npython-dotenv`nstructlog`nuvicorn" | Set-Content "backend/requirements.txt"
     New-Item -ItemType File -Force -Path "backend/routers/.gitkeep" | Out-Null
     New-Item -ItemType File -Force -Path "backend/models/.gitkeep" | Out-Null
@@ -99,7 +101,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 } elseif ($Backend -eq "nodejs") {
     Write-Host "`n[4/5] Scaffolding Node.js backend..." -ForegroundColor Yellow
-    New-Item -ItemType Directory -Force -Path "backend/src/routes" | Out-Null
+    New-Item -ItemType Directory -Force -Path "backend/src/routes" -Force | Out-Null
     New-Item -ItemType File -Force -Path "backend/src/routes/.gitkeep" | Out-Null
     '{"name":"backend","version":"1.0.0","scripts":{"dev":"tsx watch src/index.ts","start":"node dist/index.js"},"dependencies":{"express":"^4.18.0"},"devDependencies":{"typescript":"^5.0.0","tsx":"^4.0.0","@types/express":"^4.17.0"}}' | Set-Content "backend/package.json"
     @'
@@ -119,7 +121,6 @@ CMD ["node", "dist/index.js"]
 if ($Frontend -eq "react") {
     Write-Host "`n[5/5] Scaffolding React frontend..." -ForegroundColor Yellow
     New-Item -ItemType Directory -Force -Path "frontend/src/components" | Out-Null
-    New-Item -ItemType File -Force -Path "frontend/src/components/.gitkeep" | Out-Null
 
     '{"name":"frontend","version":"0.0.0","scripts":{"dev":"vite","build":"tsc && vite build","preview":"vite preview"},"dependencies":{"react":"^18.2.0","react-dom":"^18.2.0"},"devDependencies":{"@types/react":"^18.2.0","@types/react-dom":"^18.2.0","@vitejs/plugin-react":"^4.0.0","typescript":"^5.0.0","vite":"^5.0.0","tailwindcss":"^3.4.0","autoprefixer":"^10.4.0","postcss":"^8.4.0"}}' | Set-Content "frontend/package.json"
 
@@ -261,4 +262,8 @@ Write-Host ""
 Write-Host "  GitHub: https://github.com/$GithubUser/$DemoName" -ForegroundColor Green
 Write-Host "  Local:  $DemoPath" -ForegroundColor Green
 Write-Host ""
-Write-Host "Next: cd $DemoName && copilot" -ForegroundColor Gray
+Write-Host "Changing working directory to demo repo..." -ForegroundColor Gray
+Set-Location $DemoPath
+Write-Host "  ✓ Now in: $(Get-Location)" -ForegroundColor Green
+Write-Host ""
+Write-Host "Run 'copilot' to start building!" -ForegroundColor Cyan

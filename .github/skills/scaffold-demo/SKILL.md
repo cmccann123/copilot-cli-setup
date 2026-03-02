@@ -75,7 +75,9 @@ Or with no frontend (API-only demo):
 │       └── .gitkeep
 └── .github/
     ├── copilot-instructions.md  ← copied from copilot-cli-setup
-    └── agents/                  ← copied from copilot-cli-setup
+    ├── agents/                  ← copied from copilot-cli-setup
+    ├── skills/                  ← copied from copilot-cli-setup
+    └── instructions/            ← copied from copilot-cli-setup
 ```
 
 ## After Scaffolding
@@ -83,4 +85,9 @@ Or with no frontend (API-only demo):
 Tell the user:
 1. The GitHub repo URL
 2. The local folder path
-3. Suggested next prompt: "Now build the [feature] for this demo"
+3. Run `/cwd C:\Users\ConnelMcCann\Repos\<demo-name>` to switch the Copilot session into the new repo
+4. Suggested next prompt: "Now build the [feature] for this demo"
+
+> **Important:** The script must be dot-sourced to change the terminal directory:
+> `. .\scaffold-demo.ps1 -DemoName "..." -Description "..."`
+> Without the leading `.`, the directory change only applies inside the script process.
