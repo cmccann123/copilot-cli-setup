@@ -30,6 +30,9 @@ catch { Write-Warning "  ! Azure CLI not found. Install from: https://aka.ms/ins
 try { $null = Get-Command node -ErrorAction Stop; Write-Host "  ✓ Node.js installed" -ForegroundColor Green }
 catch { Write-Warning "  ! Node.js not found. Some MCP servers require Node.js." }
 
+try { $null = Get-Command deno -ErrorAction Stop; Write-Host "  ✓ Deno installed" -ForegroundColor Green }
+catch { Write-Warning "  ! Deno not found. Required for draw.io MCP server. Install from: https://deno.com" }
+
 # 2. Create Copilot config directory
 Write-Host "`n[2/5] Setting up config directory..." -ForegroundColor Yellow
 New-Item -ItemType Directory -Force -Path $CopilotConfigDir | Out-Null
@@ -78,7 +81,7 @@ if ($SkipKeyVault) {
 }
 
 # 5. Install MCP server dependencies
-Write-Host "`n[5/5] Installing MCP server dependencies..." -ForegroundColor Yellow
+Write-Host "`n[5/6] Installing MCP server dependencies..." -ForegroundColor Yellow
 
 $nodePackages = @("@playwright/mcp", "@azure/mcp")
 foreach ($pkg in $nodePackages) {
@@ -91,6 +94,30 @@ foreach ($pkg in $nodePackages) {
     }
 }
 
+# 6. Set up draw.io MCP server
+Write-Host "`n[6/6] Setting up draw.io MCP server..." -ForegroundColor Yellow
+$drawioDir = "$env:USERPROFILE\drawio-mcp-server"
+
+if (Test-Path $drawioDir) {
+    Write-Host "  ✓ draw.io MCP server already cloned at $drawioDir" -ForegroundColor Green
+} elseif (Get-Command deno -ErrorAction SilentlyContinue) {
+    try {
+        Write-Host "  Cloning simonkurtz-MSFT/drawio-mcp-server..." -ForegroundColor Gray
+        git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server $drawioDir --quiet
+        Write-Host "  ✓ Cloned to $drawioDir" -ForegroundColor Green
+
+        # Update DRAWIO_MCP_PATH in mcp-config.json
+        $mcpConfig = Get-Content $mcpTarget -Raw
+        $mcpConfig = $mcpConfig -replace '\$\{DRAWIO_MCP_PATH\}', ($drawioDir -replace '\\', '/')
+        Set-Content $mcpTarget $mcpConfig
+        Write-Host "  ✓ DRAWIO_MCP_PATH set in mcp-config.json" -ForegroundColor Green
+    } catch {
+        Write-Warning "  ! Failed to clone draw.io MCP server. Clone manually: git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server $drawioDir"
+    }
+} else {
+    Write-Warning "  ! Deno not installed — skipping draw.io MCP server setup. Install Deno from https://deno.com then re-run this script."
+}
+
 # Done
 Write-Host "`n=== Setup Complete! ===" -ForegroundColor Cyan
 Write-Host ""
@@ -101,3 +128,5 @@ Write-Host "  3. Use /agent to select a specialist agent"
 Write-Host "  4. Use /mcp show to verify MCP servers are connected"
 Write-Host ""
 Write-Host "Run .\scripts\verify-setup.ps1 to check your configuration." -ForegroundColor Gray
+Write-Host ""
+Write-Host "To open a diagram: code <file>.drawio (requires VS Code Draw.io extension: hediet.vscode-drawio)" -ForegroundColor Gray
