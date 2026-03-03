@@ -9,6 +9,8 @@ This directory contains the MCP (Model Context Protocol) server configuration te
 | `playwright` | Local (stdio) | Browser automation, UI testing, web scraping demos | `npm install -g @playwright/mcp` |
 | `azure-mcp` | Local (stdio) | Azure resource management from within Copilot | Azure service principal or `az login` |
 | `context7` | HTTP (remote) | Real-time library documentation lookup | Nothing — free public server |
+| `microsoft-learn` | HTTP (remote) | Official Microsoft/Azure docs — eliminates hallucinations | Nothing — free public server |
+| `excalidraw` | Local (stdio) | Clean architecture diagram generation and export | `npm install -g @scofieldfree/excalidraw-mcp` |
 
 > **Note:** The GitHub MCP server is built into Copilot CLI and does not need to be configured here.
 

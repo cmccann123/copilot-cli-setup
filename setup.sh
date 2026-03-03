@@ -88,7 +88,7 @@ fi
 
 # 6. Install MCP dependencies
 echo -e "\n${YELLOW}[6/6] Installing MCP server dependencies...${RESET}"
-for pkg in "@playwright/mcp" "@azure/mcp"; do
+for pkg in "@playwright/mcp" "@azure/mcp" "@scofieldfree/excalidraw-mcp"; do
   npm install -g "$pkg" --quiet 2>/dev/null && echo -e "  ${GREEN}✓ $pkg${RESET}" || echo "  ! Failed to install $pkg. Run: npm install -g $pkg"
 done
 

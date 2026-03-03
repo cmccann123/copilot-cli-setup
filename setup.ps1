@@ -81,7 +81,7 @@ if ($SkipKeyVault) {
 }
 
 # 5. Copy agents and skills globally
-Write-Host "`n[5/7] Copying agents and skills to global config..." -ForegroundColor Yellow
+Write-Host "`n[5/6] Copying agents and skills to global config..." -ForegroundColor Yellow
 
 # Agents → ~/.copilot/agents/ (user-level, available globally)
 $agentsSource = Join-Path $RepoRoot ".github\agents"
@@ -108,9 +108,9 @@ if (Test-Path $globalInstructions) {
 }
 
 # 6. Install MCP server dependencies
-Write-Host "`n[6/7] Installing MCP server dependencies..." -ForegroundColor Yellow
+Write-Host "`n[6/6] Installing MCP server dependencies..." -ForegroundColor Yellow
 
-$nodePackages = @("@playwright/mcp", "@azure/mcp")
+$nodePackages = @("@playwright/mcp", "@azure/mcp", "@scofieldfree/excalidraw-mcp")
 foreach ($pkg in $nodePackages) {
     try {
         Write-Host "  Installing $pkg..." -ForegroundColor Gray
@@ -119,30 +119,6 @@ foreach ($pkg in $nodePackages) {
     } catch {
         Write-Warning "  ! Failed to install $pkg. Install manually: npm install -g $pkg"
     }
-}
-
-# 7. Set up draw.io MCP server
-Write-Host "`n[7/7] Setting up draw.io MCP server..." -ForegroundColor Yellow
-$drawioDir = "$env:USERPROFILE\drawio-mcp-server"
-
-if (Test-Path $drawioDir) {
-    Write-Host "  ✓ draw.io MCP server already cloned at $drawioDir" -ForegroundColor Green
-} elseif (Get-Command deno -ErrorAction SilentlyContinue) {
-    try {
-        Write-Host "  Cloning simonkurtz-MSFT/drawio-mcp-server..." -ForegroundColor Gray
-        git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server $drawioDir --quiet
-        Write-Host "  ✓ Cloned to $drawioDir" -ForegroundColor Green
-
-        # Update DRAWIO_MCP_PATH in mcp-config.json
-        $mcpConfig = Get-Content $mcpTarget -Raw
-        $mcpConfig = $mcpConfig -replace '\$\{DRAWIO_MCP_PATH\}', ($drawioDir -replace '\\', '/')
-        Set-Content $mcpTarget $mcpConfig
-        Write-Host "  ✓ DRAWIO_MCP_PATH set in mcp-config.json" -ForegroundColor Green
-    } catch {
-        Write-Warning "  ! Failed to clone draw.io MCP server. Clone manually: git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server $drawioDir"
-    }
-} else {
-    Write-Warning "  ! Deno not installed — skipping draw.io MCP server setup. Install Deno from https://deno.com then re-run this script."
 }
 
 # Done

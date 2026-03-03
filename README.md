@@ -56,10 +56,9 @@ Pre-configured Model Context Protocol servers that connect Copilot to external t
 | **Azure MCP** | stdio (npx) | Azure resource management directly from Copilot | Service principal (Key Vault) |
 | **Context7** | HTTP (remote) | Real-time library documentation lookup | None |
 | **Microsoft Learn** | HTTP (remote) | Official Microsoft/Azure docs — eliminates hallucinations | None |
-| **Draw.io** | stdio (deno) | Diagram generation with 700+ Azure Architecture icons | None (requires Deno + local clone) |
+| **Excalidraw** | stdio (npx) | Clean architecture diagram generation and export | None |
 
 > `context7` and `microsoft-learn` are remote HTTP servers — no local install required.
-> `drawio` requires [Deno](https://deno.com) — the setup script clones and configures it automatically.
 
 ### Bootstrap Scripts
 - `setup.ps1` / `setup.sh` — installs dependencies, copies MCP config, optionally pulls secrets from Azure Key Vault
@@ -73,13 +72,12 @@ Running `setup.ps1` configures MCP in 7 steps:
 
 | Step | What happens |
 |------|-------------|
-| 1 | Checks prerequisites (PowerShell 6+, Copilot CLI, Azure CLI, Node.js, Deno) |
+| 1 | Checks prerequisites (PowerShell 6+, Copilot CLI, Azure CLI, Node.js) |
 | 2 | Creates `~/.copilot/` config directory |
 | 3 | Copies `mcp/mcp-config.template.json` → `~/.copilot/mcp-config.json` |
 | 4 | *(Optional)* Pulls secrets from Azure Key Vault and substitutes `${PLACEHOLDER}` values |
 | 5 | Copies agents, skills, and `copilot-instructions.md` to `~/.copilot/` globally |
-| 6 | Installs `@playwright/mcp` and `@azure/mcp` via npm |
-| 7 | Clones the draw.io MCP server locally and sets `DRAWIO_MCP_PATH` in the config |
+| 6 | Installs `@playwright/mcp`, `@azure/mcp`, and `@scofieldfree/excalidraw-mcp` via npm |
 
 The MCP config template is **never overwritten** once copied. Delete `~/.copilot/mcp-config.json` manually to reset.
 
@@ -129,6 +127,5 @@ Copy the `.github/` folder into any of your project repos to apply these agents 
 - PowerShell 6+ (Windows) or bash (macOS/Linux)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli) — `winget install GitHub.Copilot`
 - [Azure CLI](https://docs.microsoft.com/cli/azure/) — for Key Vault secrets
-- [Node.js](https://nodejs.org) — for Playwright and Azure MCP servers
-- [Deno](https://deno.com) — for the draw.io MCP server
+- [Node.js](https://nodejs.org) — for Playwright, Azure MCP, and Excalidraw MCP servers
 - Active [GitHub Copilot subscription](https://github.com/features/copilot/plans)
