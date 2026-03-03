@@ -27,6 +27,12 @@
       "url": "https://mcp.context7.com/mcp",
       "tools": ["*"]
     },
+    "microsoft-learn": {
+      "_comment": "Official Microsoft Learn documentation — eliminates hallucinations on Azure/M365 topics. No API key needed. Remote HTTP endpoint.",
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "tools": ["*"]
+    },
     "drawio": {
       "_comment": "Draw.io diagram generation with 700+ Azure Architecture icons. Requires Deno v2.3+. Install: https://deno.com. Then: git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server && set DRAWIO_MCP_PATH to the cloned path.",
       "type": "stdio",

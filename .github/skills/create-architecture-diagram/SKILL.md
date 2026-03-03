@@ -1,6 +1,6 @@
 ---
 name: create-architecture-diagram
-description: Use this skill when asked to create, draw, design, or visualise an architecture diagram. Produces a .drawio file using Azure Architecture icons via the draw.io MCP server.
+description: Use this skill when asked to create, draw, design, or visualise an architecture diagram. Defaults to Excalidraw (PNG output). Falls back to draw.io only if the user explicitly requests a .drawio file.
 ---
 
 ## When to Use
@@ -9,10 +9,17 @@ Use when the user asks:
 - "draw a diagram of this system"
 - "visualise this architecture"
 - "diagram this for me"
-- "create a draw.io diagram"
 - "show me the architecture as a diagram"
 
-## Prerequisites
+## Default — Use Excalidraw
+**Always use the `create-excalidraw-diagram` skill by default.**
+It produces a cleaner, more professional PNG output using the Excalidraw + Playwright MCP servers.
+
+Only continue with the draw.io process below if:
+- The user explicitly asks for a `.drawio` file, OR
+- The Excalidraw MCP server is unavailable
+
+## Prerequisites (draw.io fallback only)
 The **drawio MCP server** must be connected. If it's not available, tell the user to:
 1. Install Deno: https://deno.com
 2. Clone the server: `git clone https://github.com/simonkurtz-MSFT/drawio-mcp-server`

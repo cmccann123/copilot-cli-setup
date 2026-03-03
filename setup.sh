@@ -65,8 +65,29 @@ else
   echo -e "  ${GREEN}✓ Secrets injected into MCP config${RESET}"
 fi
 
-# 5. Install MCP dependencies
-echo -e "\n${YELLOW}[5/5] Installing MCP server dependencies...${RESET}"
+# 5. Copy agents and skills globally
+echo -e "\n${YELLOW}[5/6] Copying agents and skills to global config...${RESET}"
+
+# Agents → ~/.copilot/agents/ (user-level, available globally)
+if [ -d "$REPO_ROOT/.github/agents" ]; then
+  cp -r "$REPO_ROOT/.github/agents" "$COPILOT_CONFIG_DIR/"
+  echo -e "  ${GREEN}✓ Agents copied to $COPILOT_CONFIG_DIR/agents${RESET}"
+fi
+
+# Skills → ~/.copilot/skills/ (user-level, available globally)
+if [ -d "$REPO_ROOT/.github/skills" ]; then
+  cp -r "$REPO_ROOT/.github/skills" "$COPILOT_CONFIG_DIR/"
+  echo -e "  ${GREEN}✓ Skills copied to $COPILOT_CONFIG_DIR/skills${RESET}"
+fi
+
+# Instructions → ~/.copilot/copilot-instructions.md (global)
+if [ -f "$REPO_ROOT/.github/copilot-instructions.md" ]; then
+  cp "$REPO_ROOT/.github/copilot-instructions.md" "$COPILOT_CONFIG_DIR/copilot-instructions.md"
+  echo -e "  ${GREEN}✓ copilot-instructions.md copied to $COPILOT_CONFIG_DIR${RESET}"
+fi
+
+# 6. Install MCP dependencies
+echo -e "\n${YELLOW}[6/6] Installing MCP server dependencies...${RESET}"
 for pkg in "@playwright/mcp" "@azure/mcp"; do
   npm install -g "$pkg" --quiet 2>/dev/null && echo -e "  ${GREEN}✓ $pkg${RESET}" || echo "  ! Failed to install $pkg. Run: npm install -g $pkg"
 done

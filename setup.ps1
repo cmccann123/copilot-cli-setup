@@ -80,8 +80,35 @@ if ($SkipKeyVault) {
     }
 }
 
-# 5. Install MCP server dependencies
-Write-Host "`n[5/6] Installing MCP server dependencies..." -ForegroundColor Yellow
+# 5. Copy agents and skills globally
+Write-Host "`n[5/7] Copying agents and skills to global config..." -ForegroundColor Yellow
+
+# Agents → ~/.copilot/agents/ (user-level, available globally)
+$agentsSource = Join-Path $RepoRoot ".github\agents"
+$agentsTarget = Join-Path $CopilotConfigDir "agents"
+if (Test-Path $agentsSource) {
+    Copy-Item -Path $agentsSource -Destination $CopilotConfigDir -Recurse -Force
+    Write-Host "  ✓ Agents copied to $agentsTarget" -ForegroundColor Green
+}
+
+# Skills → ~/.copilot/skills/ (user-level, available globally)
+$skillsSource = Join-Path $RepoRoot ".github\skills"
+$skillsTarget = Join-Path $CopilotConfigDir "skills"
+if (Test-Path $skillsSource) {
+    Copy-Item -Path $skillsSource -Destination $CopilotConfigDir -Recurse -Force
+    Write-Host "  ✓ Skills copied to $skillsTarget" -ForegroundColor Green
+}
+
+# Instructions → ~/.copilot/copilot-instructions.md (global)
+$globalInstructions = Join-Path $RepoRoot ".github\copilot-instructions.md"
+$globalInstructionsTarget = Join-Path $CopilotConfigDir "copilot-instructions.md"
+if (Test-Path $globalInstructions) {
+    Copy-Item -Path $globalInstructions -Destination $globalInstructionsTarget -Force
+    Write-Host "  ✓ copilot-instructions.md copied to $globalInstructionsTarget" -ForegroundColor Green
+}
+
+# 6. Install MCP server dependencies
+Write-Host "`n[6/7] Installing MCP server dependencies..." -ForegroundColor Yellow
 
 $nodePackages = @("@playwright/mcp", "@azure/mcp")
 foreach ($pkg in $nodePackages) {
@@ -94,8 +121,8 @@ foreach ($pkg in $nodePackages) {
     }
 }
 
-# 6. Set up draw.io MCP server
-Write-Host "`n[6/6] Setting up draw.io MCP server..." -ForegroundColor Yellow
+# 7. Set up draw.io MCP server
+Write-Host "`n[7/7] Setting up draw.io MCP server..." -ForegroundColor Yellow
 $drawioDir = "$env:USERPROFILE\drawio-mcp-server"
 
 if (Test-Path $drawioDir) {

@@ -43,6 +43,11 @@ A "demo" should be:
 - Prefer **managed identity** over connection strings for Azure auth
 - When in doubt, ask before making large structural changes
 
+## Diagramming — ALWAYS follow this
+- **Default diagramming tool is Excalidraw** — always use the `create-excalidraw-diagram` skill
+- This applies to any request to "create a diagram", "draw an architecture", "visualise this", etc.
+- Only fall back to draw.io (`create-architecture-diagram` skill) if the user explicitly asks for a `.drawio` file or the Excalidraw MCP server is unavailable
+
 ## Agent Delegation — ALWAYS follow this
 
 Before responding to any request, analyse the intent and delegate to the most appropriate specialist agent from `.github/agents/`. Do not answer directly if a specialist agent exists for the task.
