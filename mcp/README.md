@@ -11,6 +11,9 @@ This directory contains the MCP (Model Context Protocol) server configuration te
 | `context7` | HTTP (remote) | Real-time library documentation lookup | Nothing — free public server |
 | `microsoft-learn` | HTTP (remote) | Official Microsoft/Azure docs — eliminates hallucinations | Nothing — free public server |
 | `excalidraw` | Local (stdio) | Clean architecture diagram generation and export | `npm install -g @scofieldfree/excalidraw-mcp` |
+| `terraform` | Local (stdio) | HashiCorp official — Terraform registry, provider/module docs, workspace/plan/apply | Docker + optional `TFE_TOKEN` for HCP Terraform |
+| `azure-devops` | Local (stdio) | Azure DevOps repos, work items, pipelines, boards | `npm install -g @tiberriver256/mcp-server-azure-devops` + PAT |
+| `vault` | Local (stdio) | HashiCorp official — Vault secrets, KV operations | Docker + `VAULT_ADDR` + `VAULT_TOKEN` |
 
 > **Note:** The GitHub MCP server is built into Copilot CLI and does not need to be configured here.
 

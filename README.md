@@ -57,8 +57,12 @@ Pre-configured Model Context Protocol servers that connect Copilot to external t
 | **Context7** | HTTP (remote) | Real-time library documentation lookup | None |
 | **Microsoft Learn** | HTTP (remote) | Official Microsoft/Azure docs — eliminates hallucinations | None |
 | **Excalidraw** | stdio (npx) | Clean architecture diagram generation and export | None |
+| **Terraform** | stdio (Docker) | HashiCorp official — registry search, provider/module docs, workspace management, plan/apply | `TFE_TOKEN` (HCP Terraform only) |
+| **Azure DevOps** | stdio (npx) | Repos, work items, pipelines, boards | `AZURE_DEVOPS_ORG_URL`, `AZURE_DEVOPS_PAT` |
+| **Vault** | stdio (Docker) | HashiCorp official — secrets management, KV operations | `VAULT_ADDR`, `VAULT_TOKEN` |
 
 > `context7` and `microsoft-learn` are remote HTTP servers — no local install required.
+> `terraform` and `vault` require Docker — no npm install needed.
 
 ### Bootstrap Scripts
 - `setup.ps1` / `setup.sh` — installs dependencies, copies MCP config, optionally pulls secrets from Azure Key Vault
@@ -72,12 +76,12 @@ Running `setup.ps1` configures MCP in 7 steps:
 
 | Step | What happens |
 |------|-------------|
-| 1 | Checks prerequisites (PowerShell 6+, Copilot CLI, Azure CLI, Node.js) |
+| 1 | Checks prerequisites (PowerShell 6+, Copilot CLI, Azure CLI, Node.js, Docker) |
 | 2 | Creates `~/.copilot/` config directory |
 | 3 | Copies `mcp/mcp-config.template.json` → `~/.copilot/mcp-config.json` |
 | 4 | *(Optional)* Pulls secrets from Azure Key Vault and substitutes `${PLACEHOLDER}` values |
 | 5 | Copies agents, skills, and `copilot-instructions.md` to `~/.copilot/` globally |
-| 6 | Installs `@playwright/mcp`, `@azure/mcp`, and `@scofieldfree/excalidraw-mcp` via npm |
+| 6 | Installs `@playwright/mcp`, `@azure/mcp`, `@scofieldfree/excalidraw-mcp`, and `@tiberriver256/mcp-server-azure-devops` via npm |
 
 The MCP config template is **never overwritten** once copied. Delete `~/.copilot/mcp-config.json` manually to reset.
 
@@ -98,6 +102,12 @@ Expected secret names in Key Vault:
 | `azure-tenant-id` | Azure MCP server auth |
 | `azure-client-id` | Azure MCP server auth |
 | `azure-client-secret` | Azure MCP server auth |
+| `azure-devops-org-url` | Azure DevOps MCP (e.g. `https://dev.azure.com/your-org`) |
+| `azure-devops-pat` | Azure DevOps MCP personal access token |
+| `tfe-token` | Terraform MCP — HCP Terraform/Enterprise API token |
+| `tfe-address` | Terraform MCP — HCP Terraform/Enterprise URL (optional) |
+| `vault-addr` | Vault MCP — Vault server address (e.g. `https://vault.example.com`) |
+| `vault-token` | Vault MCP — Vault access token |
 
 You must be authenticated (`az login`) with access to the Key Vault.
 
@@ -127,5 +137,6 @@ Copy the `.github/` folder into any of your project repos to apply these agents 
 - PowerShell 6+ (Windows) or bash (macOS/Linux)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli) — `winget install GitHub.Copilot`
 - [Azure CLI](https://docs.microsoft.com/cli/azure/) — for Key Vault secrets
-- [Node.js](https://nodejs.org) — for Playwright, Azure MCP, and Excalidraw MCP servers
+- [Node.js](https://nodejs.org) — for Playwright, Azure MCP, Excalidraw, and Azure DevOps MCP servers
+- [Docker](https://www.docker.com) — for Terraform and Vault MCP servers
 - Active [GitHub Copilot subscription](https://github.com/features/copilot/plans)

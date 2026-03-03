@@ -29,6 +29,7 @@ echo -e "\n${YELLOW}[1/5] Checking prerequisites...${RESET}"
 command -v copilot &>/dev/null && echo -e "  ${GREEN}✓ Copilot CLI installed${RESET}" || echo "  ! Copilot CLI not found. Install from: https://github.com/github/copilot-cli"
 command -v az &>/dev/null && echo -e "  ${GREEN}✓ Azure CLI installed${RESET}" || echo "  ! Azure CLI not found. Install from: https://docs.microsoft.com/cli/azure/install-azure-cli"
 command -v node &>/dev/null && echo -e "  ${GREEN}✓ Node.js installed${RESET}" || echo "  ! Node.js not found. Some MCP servers require Node.js."
+command -v docker &>/dev/null && echo -e "  ${GREEN}✓ Docker installed${RESET}" || echo "  ! Docker not found. Required for Terraform and Vault MCP servers. Install from: https://www.docker.com"
 
 # 2. Create config directory
 echo -e "\n${YELLOW}[2/5] Setting up config directory...${RESET}"
@@ -58,10 +59,22 @@ else
   AZURE_TENANT_ID=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "azure-tenant-id" --query "value" -o tsv 2>/dev/null || true)
   AZURE_CLIENT_ID=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "azure-client-id" --query "value" -o tsv 2>/dev/null || true)
   AZURE_CLIENT_SECRET=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "azure-client-secret" --query "value" -o tsv 2>/dev/null || true)
+  ADO_ORG_URL=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "azure-devops-org-url" --query "value" -o tsv 2>/dev/null || true)
+  ADO_PAT=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "azure-devops-pat" --query "value" -o tsv 2>/dev/null || true)
+  TFE_TOKEN=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "tfe-token" --query "value" -o tsv 2>/dev/null || true)
+  TFE_ADDRESS=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "tfe-address" --query "value" -o tsv 2>/dev/null || true)
+  VAULT_ADDR=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "vault-addr" --query "value" -o tsv 2>/dev/null || true)
+  VAULT_TOKEN=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "vault-token" --query "value" -o tsv 2>/dev/null || true)
 
-  [ -n "$AZURE_TENANT_ID" ]     && sed -i "s|\${AZURE_TENANT_ID}|$AZURE_TENANT_ID|g" "$MCP_TARGET"
-  [ -n "$AZURE_CLIENT_ID" ]     && sed -i "s|\${AZURE_CLIENT_ID}|$AZURE_CLIENT_ID|g" "$MCP_TARGET"
-  [ -n "$AZURE_CLIENT_SECRET" ] && sed -i "s|\${AZURE_CLIENT_SECRET}|$AZURE_CLIENT_SECRET|g" "$MCP_TARGET"
+  [ -n "$AZURE_TENANT_ID" ]     && sed -i "s|\${AZURE_TENANT_ID}|$AZURE_TENANT_ID|g"           "$MCP_TARGET"
+  [ -n "$AZURE_CLIENT_ID" ]     && sed -i "s|\${AZURE_CLIENT_ID}|$AZURE_CLIENT_ID|g"           "$MCP_TARGET"
+  [ -n "$AZURE_CLIENT_SECRET" ] && sed -i "s|\${AZURE_CLIENT_SECRET}|$AZURE_CLIENT_SECRET|g"   "$MCP_TARGET"
+  [ -n "$ADO_ORG_URL" ]         && sed -i "s|\${AZURE_DEVOPS_ORG_URL}|$ADO_ORG_URL|g"         "$MCP_TARGET"
+  [ -n "$ADO_PAT" ]             && sed -i "s|\${AZURE_DEVOPS_PAT}|$ADO_PAT|g"                 "$MCP_TARGET"
+  [ -n "$TFE_TOKEN" ]           && sed -i "s|\${TFE_TOKEN}|$TFE_TOKEN|g"                       "$MCP_TARGET"
+  [ -n "$TFE_ADDRESS" ]         && sed -i "s|\${TFE_ADDRESS}|$TFE_ADDRESS|g"                   "$MCP_TARGET"
+  [ -n "$VAULT_ADDR" ]          && sed -i "s|\${VAULT_ADDR}|$VAULT_ADDR|g"                     "$MCP_TARGET"
+  [ -n "$VAULT_TOKEN" ]         && sed -i "s|\${VAULT_TOKEN}|$VAULT_TOKEN|g"                   "$MCP_TARGET"
   echo -e "  ${GREEN}✓ Secrets injected into MCP config${RESET}"
 fi
 
@@ -88,7 +101,7 @@ fi
 
 # 6. Install MCP dependencies
 echo -e "\n${YELLOW}[6/6] Installing MCP server dependencies...${RESET}"
-for pkg in "@playwright/mcp" "@azure/mcp" "@scofieldfree/excalidraw-mcp"; do
+for pkg in "@playwright/mcp" "@azure/mcp" "@scofieldfree/excalidraw-mcp" "@tiberriver256/mcp-server-azure-devops"; do
   npm install -g "$pkg" --quiet 2>/dev/null && echo -e "  ${GREEN}✓ $pkg${RESET}" || echo "  ! Failed to install $pkg. Run: npm install -g $pkg"
 done
 

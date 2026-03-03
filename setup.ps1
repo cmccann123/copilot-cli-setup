@@ -33,6 +33,9 @@ catch { Write-Warning "  ! Node.js not found. Some MCP servers require Node.js."
 try { $null = Get-Command deno -ErrorAction Stop; Write-Host "  ✓ Deno installed" -ForegroundColor Green }
 catch { Write-Warning "  ! Deno not found. Required for draw.io MCP server. Install from: https://deno.com" }
 
+try { $null = Get-Command docker -ErrorAction Stop; Write-Host "  ✓ Docker installed" -ForegroundColor Green }
+catch { Write-Warning "  ! Docker not found. Required for Terraform and Vault MCP servers. Install from: https://www.docker.com" }
+
 # 2. Create Copilot config directory
 Write-Host "`n[2/5] Setting up config directory..." -ForegroundColor Yellow
 New-Item -ItemType Directory -Force -Path $CopilotConfigDir | Out-Null
@@ -66,12 +69,24 @@ if ($SkipKeyVault) {
         $azureTenantId     = az keyvault secret show --vault-name $KeyVaultName --name "azure-tenant-id"     --query "value" -o tsv 2>$null
         $azureClientId     = az keyvault secret show --vault-name $KeyVaultName --name "azure-client-id"     --query "value" -o tsv 2>$null
         $azureClientSecret = az keyvault secret show --vault-name $KeyVaultName --name "azure-client-secret" --query "value" -o tsv 2>$null
+        $adoOrgUrl         = az keyvault secret show --vault-name $KeyVaultName --name "azure-devops-org-url" --query "value" -o tsv 2>$null
+        $adoPat            = az keyvault secret show --vault-name $KeyVaultName --name "azure-devops-pat"     --query "value" -o tsv 2>$null
+        $tfeToken          = az keyvault secret show --vault-name $KeyVaultName --name "tfe-token"            --query "value" -o tsv 2>$null
+        $tfeAddress        = az keyvault secret show --vault-name $KeyVaultName --name "tfe-address"          --query "value" -o tsv 2>$null
+        $vaultAddr         = az keyvault secret show --vault-name $KeyVaultName --name "vault-addr"           --query "value" -o tsv 2>$null
+        $vaultToken        = az keyvault secret show --vault-name $KeyVaultName --name "vault-token"          --query "value" -o tsv 2>$null
 
         # Substitute placeholders in MCP config
         $mcpConfig = Get-Content $mcpTarget -Raw
-        if ($azureTenantId)     { $mcpConfig = $mcpConfig -replace '\$\{AZURE_TENANT_ID\}',     $azureTenantId }
-        if ($azureClientId)     { $mcpConfig = $mcpConfig -replace '\$\{AZURE_CLIENT_ID\}',     $azureClientId }
-        if ($azureClientSecret) { $mcpConfig = $mcpConfig -replace '\$\{AZURE_CLIENT_SECRET\}', $azureClientSecret }
+        if ($azureTenantId)     { $mcpConfig = $mcpConfig -replace '\$\{AZURE_TENANT_ID\}',       $azureTenantId }
+        if ($azureClientId)     { $mcpConfig = $mcpConfig -replace '\$\{AZURE_CLIENT_ID\}',       $azureClientId }
+        if ($azureClientSecret) { $mcpConfig = $mcpConfig -replace '\$\{AZURE_CLIENT_SECRET\}',   $azureClientSecret }
+        if ($adoOrgUrl)         { $mcpConfig = $mcpConfig -replace '\$\{AZURE_DEVOPS_ORG_URL\}',  $adoOrgUrl }
+        if ($adoPat)            { $mcpConfig = $mcpConfig -replace '\$\{AZURE_DEVOPS_PAT\}',      $adoPat }
+        if ($tfeToken)          { $mcpConfig = $mcpConfig -replace '\$\{TFE_TOKEN\}',             $tfeToken }
+        if ($tfeAddress)        { $mcpConfig = $mcpConfig -replace '\$\{TFE_ADDRESS\}',           $tfeAddress }
+        if ($vaultAddr)         { $mcpConfig = $mcpConfig -replace '\$\{VAULT_ADDR\}',            $vaultAddr }
+        if ($vaultToken)        { $mcpConfig = $mcpConfig -replace '\$\{VAULT_TOKEN\}',           $vaultToken }
         Set-Content $mcpTarget $mcpConfig
 
         Write-Host "  ✓ Secrets injected into MCP config" -ForegroundColor Green
@@ -110,7 +125,7 @@ if (Test-Path $globalInstructions) {
 # 6. Install MCP server dependencies
 Write-Host "`n[6/6] Installing MCP server dependencies..." -ForegroundColor Yellow
 
-$nodePackages = @("@playwright/mcp", "@azure/mcp", "@scofieldfree/excalidraw-mcp")
+$nodePackages = @("@playwright/mcp", "@azure/mcp", "@scofieldfree/excalidraw-mcp", "@tiberriver256/mcp-server-azure-devops")
 foreach ($pkg in $nodePackages) {
     try {
         Write-Host "  Installing $pkg..." -ForegroundColor Gray

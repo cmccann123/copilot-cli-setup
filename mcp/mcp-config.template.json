@@ -40,6 +40,43 @@
       "args": ["@scofieldfree/excalidraw-mcp@latest"],
       "env": {},
       "tools": ["*"]
+    },
+    "terraform": {
+      "_comment": "HashiCorp official Terraform MCP — registry search, provider/module docs, workspace management, plan/apply. Requires Docker. Token only needed for HCP Terraform/Enterprise workspaces.",
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "TFE_TOKEN=${TFE_TOKEN}",
+        "-e", "TFE_ADDRESS=${TFE_ADDRESS}",
+        "hashicorp/terraform-mcp-server:latest"
+      ],
+      "env": {},
+      "tools": ["*"]
+    },
+    "azure-devops": {
+      "_comment": "Azure DevOps MCP — repos, work items, pipelines, boards. Run: npm install -g @tiberriver256/mcp-server-azure-devops. Set AZURE_DEVOPS_ORG_URL (e.g. https://dev.azure.com/your-org) and AZURE_DEVOPS_PAT.",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@tiberriver256/mcp-server-azure-devops@latest"],
+      "env": {
+        "AZURE_DEVOPS_ORG_URL": "${AZURE_DEVOPS_ORG_URL}",
+        "AZURE_DEVOPS_PAT": "${AZURE_DEVOPS_PAT}"
+      },
+      "tools": ["*"]
+    },
+    "vault": {
+      "_comment": "HashiCorp official Vault MCP — KV secrets, mount management. Requires Docker and a running Vault instance. Set VAULT_ADDR and VAULT_TOKEN.",
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "VAULT_ADDR=${VAULT_ADDR}",
+        "-e", "VAULT_TOKEN=${VAULT_TOKEN}",
+        "hashicorp/vault-mcp-server:latest"
+      ],
+      "env": {},
+      "tools": ["*"]
     }
   }
 }
