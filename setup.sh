@@ -99,6 +99,12 @@ if [ -f "$REPO_ROOT/.github/copilot-instructions.md" ]; then
   echo -e "  ${GREEN}✓ copilot-instructions.md copied to $COPILOT_CONFIG_DIR${RESET}"
 fi
 
+# Squad team state → ~/.copilot/squad/
+if [ -d "$REPO_ROOT/.squad" ]; then
+  cp -r "$REPO_ROOT/.squad" "$COPILOT_CONFIG_DIR/squad"
+  echo -e "  ${GREEN}✓ Squad team state copied to $COPILOT_CONFIG_DIR/squad${RESET}"
+fi
+
 # 6. Install MCP dependencies
 echo -e "\n${YELLOW}[6/6] Installing MCP server dependencies...${RESET}"
 for pkg in "@playwright/mcp" "@azure/mcp" "@scofieldfree/excalidraw-mcp" "@tiberriver256/mcp-server-azure-devops"; do

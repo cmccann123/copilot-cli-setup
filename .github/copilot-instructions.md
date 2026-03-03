@@ -7,7 +7,7 @@ I am a developer building demos, prototypes, and production-grade solutions — 
 - **Cloud:** Azure (primary), with services like Azure OpenAI, Azure AI Search, Azure Container Apps, Azure Functions, Azure Key Vault
 - **Backend:** Python (FastAPI, Flask), Node.js (Express, TypeScript)
 - **Frontend:** React, TypeScript, Tailwind CSS
-- **Infrastructure:** Bicep, Azure Developer CLI (azd), Docker, GitHub Actions
+- **Infrastructure:** Bicep, Terraform, Azure Developer CLI (azd), Docker, GitHub Actions
 - **AI/ML:** Azure OpenAI, LangChain, Semantic Kernel, Promptflow, Azure AI Foundry
 - **Data:** PostgreSQL, Cosmos DB, Azure SQL
 
@@ -54,13 +54,17 @@ Before responding to any request, analyse the intent and delegate to the most ap
 
 | If the request is about... | Delegate to |
 |---|---|
+| Multi-domain tasks, or unsure which agent to use | `coordinator` |
 | Azure infrastructure, Bicep, azd, RBAC, networking, Managed Identity | `azure-architect` |
+| Terraform HCL, modules, state, Azure provider, Terraform CI/CD | `terraform-engineer` |
 | Building a demo, POC, or prototype for a client | `demo-builder` |
 | Presales, client presentations, visual impact, storytelling | `presales` |
 | Reviewing code, security issues, Azure anti-patterns, bugs | `code-reviewer` |
+| Architecture diagrams, Excalidraw, draw.io | `diagram-architect` |
 
 **Rules:**
 - Always state which agent you are delegating to and why, before responding
-- If a request spans multiple agents (e.g. "build a demo AND review the infra"), run them sequentially — demo-builder first, then azure-architect
+- If a request spans multiple agents, use `coordinator` — it will decompose and route via `/fleet`
 - Only answer directly yourself if no specialist agent covers the request (e.g. general coding questions, explaining concepts, session management)
-- If the request is ambiguous, pick the closest agent and note the assumption
+- If the request is ambiguous, use `coordinator` and note the assumption
+- Team roster: `.squad/team.md` | Routing rules: `.squad/routing.md` | Decisions log: `.squad/decisions.md`

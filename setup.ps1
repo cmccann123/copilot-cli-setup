@@ -122,6 +122,14 @@ if (Test-Path $globalInstructions) {
     Write-Host "  ✓ copilot-instructions.md copied to $globalInstructionsTarget" -ForegroundColor Green
 }
 
+# Squad team state → ~/.copilot/squad/
+$squadSource = Join-Path $RepoRoot ".squad"
+$squadTarget = Join-Path $CopilotConfigDir "squad"
+if (Test-Path $squadSource) {
+    Copy-Item -Path $squadSource -Destination $squadTarget -Recurse -Force
+    Write-Host "  ✓ Squad team state copied to $squadTarget" -ForegroundColor Green
+}
+
 # 6. Install MCP server dependencies
 Write-Host "`n[6/6] Installing MCP server dependencies..." -ForegroundColor Yellow
 
