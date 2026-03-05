@@ -34,19 +34,19 @@ Then verify everything is working:
 ### Custom Agents (`/.github/agents/`)
 Specialist agents you can invoke with `/agent` inside any Copilot session. All agents are installed globally to `~/.copilot/agents/` by the setup script — available in every directory.
 
-| Agent | Purpose |
-|---|---|
-| `coordinator` | Orchestrates the full team — decomposes multi-domain tasks and fans out to specialists via `/fleet` |
-| `azure-architect` | Designs and implements Azure infrastructure with Bicep, azd, Managed Identity, and RBAC |
-| `terraform-engineer` | Writes Terraform HCL modules, manages remote state, builds Terraform CI/CD pipelines |
-| `demo-builder` | Builds fast, client-ready Azure demos runnable in under 10 minutes |
-| `presales` | Builds POCs optimised for live client presentations — visual impact and storytelling |
-| `code-reviewer` | Reviews code for security issues, Azure anti-patterns, and correctness bugs only |
-| `diagram-architect` | Creates and updates architecture diagrams using draw.io with official Azure icons |
-| `solution-designer` | Produces HLD/LLD design documents, ADRs, and technical specs |
-| `python-engineer` | Python specialist — FastAPI, async, pydantic, Azure SDK, pytest |
-| `pipeline-engineer` | CI/CD pipelines — GitHub Actions and Azure DevOps for Terraform and Python workloads |
-| `security-hardening` | Cloud security assessments — IAM, network exposure, secrets management, Defender, compliance |
+| Agent | Purpose | Model | Rationale |
+|---|---|---|---|
+| `coordinator` | Orchestrates the full team — decomposes multi-domain tasks and fans out to specialists via `/fleet` | `claude-sonnet-4.6` | Complex multi-domain reasoning and task decomposition requires the strongest general-purpose reasoning model |
+| `azure-architect` | Designs and implements Azure infrastructure with Bicep, azd, Managed Identity, and RBAC | `claude-sonnet-4.6` | Deep reasoning for infrastructure trade-offs, security design, and Bicep best practices |
+| `terraform-engineer` | Writes Terraform HCL modules, manages remote state, builds Terraform CI/CD pipelines | `gpt-5.2-codex` | Code-generation-heavy workload — Codex excels at HCL authoring and module structure |
+| `demo-builder` | Builds fast, client-ready Azure demos runnable in under 10 minutes | `gpt-5.2-codex` | Fast, high-quality code generation is the priority for rapid demo scaffolding |
+| `presales` | Builds POCs optimised for live client presentations — visual impact and storytelling | `claude-opus-4.6` | Most nuanced and creative model — best suited for persuasive, client-facing narrative |
+| `code-reviewer` | Reviews code for security issues, Azure anti-patterns, and correctness bugs only | `gpt-5.3-codex` | Sharpest code comprehension for precise security and correctness analysis |
+| `diagram-architect` | Creates and updates architecture diagrams using draw.io with official Azure icons | `claude-sonnet-4.6` | Structural and spatial reasoning produces cleaner, better-organised architecture diagrams |
+| `solution-designer` | Produces HLD/LLD design documents, ADRs, and technical specs | `claude-sonnet-4.6` | Long-form structured reasoning and technical writing are core Claude strengths |
+| `python-engineer` | Python specialist — FastAPI, async, pydantic, Azure SDK, pytest | `gpt-5.3-codex` | Best-in-class code generation and Python-specific pattern recognition |
+| `pipeline-engineer` | CI/CD pipelines — GitHub Actions and Azure DevOps for Terraform and Python workloads | `gpt-5.2-codex` | YAML-heavy, pattern-driven work — Codex handles pipeline syntax and structure reliably |
+| `security-hardening` | Cloud security assessments — IAM, network exposure, secrets management, Defender, compliance | `claude-sonnet-4.6` | Security analysis requires nuanced reasoning across risk, compliance, and architecture context |
 
 ### Coding Instructions (`/.github/instructions/`)
 Language-specific rules automatically applied when Copilot works on matching files:
