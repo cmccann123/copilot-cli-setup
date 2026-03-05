@@ -19,6 +19,10 @@ Read `.squad/team.md` for the full roster and `.squad/routing.md` for routing ru
 | `presales` | Client presentations, storytelling, visual impact |
 | `code-reviewer` | Security, correctness, Azure anti-patterns, bugs |
 | `diagram-architect` | Architecture diagrams — Excalidraw by default |
+| `solution-designer` | HLD/LLD design documents, ADRs, NFRs, technical specs |
+| `python-engineer` | Python applications — FastAPI, async, pydantic, Azure SDK, pytest |
+| `pipeline-engineer` | CI/CD pipelines — GitHub Actions, Azure DevOps, Terraform and Python workflows |
+| `security-hardening` | Cloud security posture — IAM, network exposure, secrets, Defender, compliance |
 
 ## How to Orchestrate
 
@@ -61,7 +65,11 @@ Once specialists complete, produce a clear summary covering:
 | Client demo or POC | `demo-builder` | `presales` |
 | Presales or pitch deck | `presales` | `diagram-architect` |
 | Architecture diagram | `diagram-architect` | — |
-| Code review or security audit | `code-reviewer` | — |
+| Code review or security audit | `code-reviewer` | `security-hardening` |
+| Design document (HLD/LLD/ADR) | `solution-designer` | `diagram-architect` |
+| Python application code | `python-engineer` | `code-reviewer` |
+| CI/CD pipeline | `pipeline-engineer` | `terraform-engineer`, `security-hardening` |
+| Security assessment or hardening | `security-hardening` | `code-reviewer` |
 | Ambiguous / multi-domain | You decide — decompose first | All relevant specialists |
 
 ## Behaviour Rules
