@@ -48,6 +48,13 @@ A "demo" should be:
 - This applies to any request to "create a diagram", "draw an architecture", "visualise this", etc.
 - Only fall back to draw.io (`create-architecture-diagram` skill) if the user explicitly asks for a `.drawio` file or the Excalidraw MCP server is unavailable
 
+## Git Workflow — ALWAYS follow this
+- **Never push directly to `main`** — always create a feature branch and open a PR
+- Branch naming: `feat/<short-description>`, `fix/<short-description>`, `docs/<short-description>`
+- After making changes: `git checkout -b feat/<name>` → commit → push branch → open PR via `gh pr create`
+- If already on `main` with uncommitted changes: stash or commit to a new branch before pushing
+- This applies to ALL repos — no exceptions
+
 ## Agent Delegation — ALWAYS follow this
 
 Before responding to any request, analyse the intent and delegate to the most appropriate specialist agent from `.github/agents/`. Do not answer directly if a specialist agent exists for the task.
@@ -61,6 +68,10 @@ Before responding to any request, analyse the intent and delegate to the most ap
 | Presales, client presentations, visual impact, storytelling | `presales` |
 | Reviewing code, security issues, Azure anti-patterns, bugs | `code-reviewer` |
 | Architecture diagrams, Excalidraw, draw.io | `diagram-architect` |
+| HLD/LLD design documents, ADRs, technical specs | `solution-designer` |
+| Python application code, FastAPI, async, pydantic | `python-engineer` |
+| CI/CD pipelines, GitHub Actions, Azure DevOps | `pipeline-engineer` |
+| Security hardening, cloud security posture, compliance | `security-hardening` |
 
 **Rules:**
 - Always state which agent you are delegating to and why, before responding
