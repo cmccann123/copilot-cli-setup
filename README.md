@@ -32,14 +32,21 @@ Then verify everything is working:
 ## 📦 What's Included
 
 ### Custom Agents (`/.github/agents/`)
-Specialist agents you can invoke with `/agent` inside any Copilot session:
+Specialist agents you can invoke with `/agent` inside any Copilot session. All agents are installed globally to `~/.copilot/agents/` by the setup script — available in every directory.
 
 | Agent | Purpose |
 |---|---|
-| `demo-builder` | Builds fast, client-ready Azure demos with README and setup scripts |
-| `azure-architect` | Designs and implements Azure infrastructure with Bicep and azd |
-| `presales` | Builds impressive POCs optimised for live client presentations |
-| `code-reviewer` | Reviews code for security, correctness, and Azure best practices |
+| `coordinator` | Orchestrates the full team — decomposes multi-domain tasks and fans out to specialists via `/fleet` |
+| `azure-architect` | Designs and implements Azure infrastructure with Bicep, azd, Managed Identity, and RBAC |
+| `terraform-engineer` | Writes Terraform HCL modules, manages remote state, builds Terraform CI/CD pipelines |
+| `demo-builder` | Builds fast, client-ready Azure demos runnable in under 10 minutes |
+| `presales` | Builds POCs optimised for live client presentations — visual impact and storytelling |
+| `code-reviewer` | Reviews code for security issues, Azure anti-patterns, and correctness bugs only |
+| `diagram-architect` | Creates and updates architecture diagrams using draw.io with official Azure icons |
+| `solution-designer` | Produces HLD/LLD design documents, ADRs, and technical specs |
+| `python-engineer` | Python specialist — FastAPI, async, pydantic, Azure SDK, pytest |
+| `pipeline-engineer` | CI/CD pipelines — GitHub Actions and Azure DevOps for Terraform and Python workloads |
+| `security-hardening` | Cloud security assessments — IAM, network exposure, secrets management, Defender, compliance |
 
 ### Coding Instructions (`/.github/instructions/`)
 Language-specific rules automatically applied when Copilot works on matching files:
